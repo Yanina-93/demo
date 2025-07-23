@@ -3,23 +3,30 @@ package com.LifeTracker.demo.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Entity
 public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique identifier for the event", example = "1")
     private Long id;
 
     @NotEmpty(message = "This field cannot be empty")
     @Size(min = 2, max = 100)
+    @Schema(description = "Title of the event", example = "Team Meeting")
     private String title;
 
     @NotEmpty(message = "This field cannot be empty")
     @Size(min = 2, max = 50)
+    @Schema(description = "Type of the event", example = "work")
     private String type; // clase, trabajo, estudio, descanso
 
+    @Schema(description = "Date of the event", example = "2023-03-15")
     private java.sql.Date date;
+
+    @Schema(description = "Start time of the event", example = "10:00:00")
     private java.sql.Time startTime;
     private Integer duration; // minutos
 

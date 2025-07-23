@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 //import org.antlr.v4.runtime.misc.NotNull;
 //import org.hibernate.annotations.NotFound;
 import jakarta.validation.constraints.*;
@@ -14,11 +16,13 @@ import jakarta.validation.constraints.*;
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique identifier for the user", example = "1")
     private Long id;
 
     @NotEmpty(message = "This field cannot be empty")
 
     @Size(min = 2, max = 50)
+    @Schema(description = "Name of the user", example = "John Doe")
     private String name;
 
     @NotEmpty(message = "This field cannot be empty")
@@ -28,6 +32,7 @@ public class AppUser {
 
     @NotBlank(message = "This field cannot be empty")
     @Size(min = 6, max = 100)
+    @Schema(description = "Password hash of the user", example = "hashed_password")
     private String passwordHash;
 
     private Timestamp registrationDate = new Timestamp(System.currentTimeMillis());
