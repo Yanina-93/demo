@@ -37,6 +37,8 @@ public class AppUser {
 
     private Timestamp registrationDate = new Timestamp(System.currentTimeMillis());
 
+     private String role; // "USER", "ADMIN", etc.
+
     //Relationships with other entities
     @OneToMany(mappedBy = "AppUser", cascade = CascadeType.ALL)
     private List<Event> events;
@@ -50,6 +52,10 @@ public class AppUser {
     private List<MotivationalQuote> motivationalQuotes;
 
     // getters y setters
+
+    public String getRole() {
+        return role;
+    }
     public Long getId() {
         return id;
     }
@@ -93,7 +99,9 @@ public class AppUser {
     public void setEmail(String email) {
         this.email = email;
     }
-
+    public void setRole(String role) {
+        this.role = role;
+    }
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
