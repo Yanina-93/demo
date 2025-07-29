@@ -4,6 +4,7 @@ public class RegisterRequest {
     private String email;
     private String password;
     private String name; // si pides nombre en el registro
+    private String role;
 
     // Constructor vacío necesario para deserialización
     public RegisterRequest() {}
@@ -26,5 +27,11 @@ public class RegisterRequest {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 }

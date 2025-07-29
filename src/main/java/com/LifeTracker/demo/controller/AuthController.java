@@ -1,15 +1,16 @@
 package com.LifeTracker.demo.controller;
+
 import com.LifeTracker.demo.model.AppUser;
 import com.LifeTracker.demo.repository.UserRepository;
 import com.LifeTracker.demo.security.JwtUtil;
 import com.LifeTracker.demo.dto.*;
+import com.LifeTracker.demo.service.UserService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;   
+import org.springframework.web.bind.annotation.*;  
 
 
 import java.util.Optional;
@@ -19,7 +20,7 @@ import java.util.Optional;
 public class AuthController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -28,35 +29,43 @@ public class AuthController {
     // REGISTRO
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        //verify if email is already registered
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        if (userService.findByEmail(request.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Email already registered.");
+                    .body(new MessageResponse("Email already registered."));
         }
-        AppUser newUser = new AppUser();
-        newUser.setEmail(request.getEmail());
-        newUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        newUser.setName(request.getName()); //set the name here
-        userRepository.save(newUser);
-        return ResponseEntity.ok("User registered successfully.");
+        String role = (request.getRole() != null && !request.getRole().isEmpty()) ? request.getRole() : "USER";
+        Optional<AppUser> registerResult = userService.register(
+            request.getEmail(),
+            request.getPassword(),
+            role,
+            request.getName()
+        );
+        if (registerResult.isPresent()) {
+            // Si llega aquí, significa que por alguna razón el usuario existía (rara vez pasa)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new MessageResponse("Email already registered."));
+        }
+        // Registro exitoso
+        return ResponseEntity.ok(
+            new MessageResponse("User registered successfully: " + request.getEmail())
+        );
     }
+
 
     // LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Optional<AppUser> optionalUser = userRepository.findByEmail(request.getEmail());
+        Optional<AppUser> optionalUser = userService.findByEmail(request.getEmail());
         if (optionalUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid credentials (email not registered).");
+                    .body(new MessageResponse("Invalid credentials (email not registered)."));
         }
         AppUser user = optionalUser.get();
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid credentials (incorrect password).");
+                    .body(new MessageResponse("Invalid credentials (incorrect password)."));
         }
-        // Generate the JWT using the email and role
-        String token = jwtUtil.generateToken(user.getEmail());
-        return ResponseEntity.ok(new AuthResponse(token));
-    
+        String token = jwtUtil.generateToken(user.getEmail()); // Mejor si pasas también el rol
+        return ResponseEntity.ok(new AuthResponse(token, user.getEmail(), user.getName(), user.getRole()));
     }
 }
