@@ -2,7 +2,6 @@ package com.LifeTracker.demo.config;
 
 import com.LifeTracker.demo.security.CustomUserDetailsService;
 import com.LifeTracker.demo.security.JwtAuthenticationFilter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.*;
@@ -20,6 +19,9 @@ public class SecurityConfig {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
@@ -30,23 +32,31 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // Importante: permite sesiones para login web
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/motivation/**", "/api/currency/**", "/api/calendar/events/**", "/v3/api-docs/**", "/swagger-ui/**","/","/home","/index").permitAll()
+                .requestMatchers("/api/auth/**", "/api/motivation/**", "/api/currency/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .requestMatchers("/", "/home", "/index", "/login", "/register", "/calendar").permitAll()
                 .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/dashboard", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
 }
 
 

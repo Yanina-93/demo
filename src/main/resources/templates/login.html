@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login | UniLifeTracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .login-container { width: 350px; margin: 100px auto; padding: 2em; box-shadow: 0 2px 12px #ddd; border-radius: 12px; }
+        input { width: 100%; margin: 1em 0; padding: 0.5em; }
+        button { width: 100%; padding: 0.5em; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Inicia sesión</h2>
+        <form th:action="@{/login}" method="post">
+            <input type="text" name="username" placeholder="Usuario" required />
+            <input type="password" name="password" placeholder="Contraseña" required />
+            <button type="submit">Entrar</button>
+            <div th:if="${param.error}" style="color: red;">Usuario o contraseña incorrectos</div>
+            <div th:if="${param.logout}" style="color: green;">Sesión cerrada</div>
+        </form>
+    </div>
+</body>
+</html>

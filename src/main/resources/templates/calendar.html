@@ -1,22 +1,16 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Calendario de eventos</title>
-    <!-- FullCalendar CSS -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
     <style>
-        #calendar {
-            max-width: 900px;
-            margin: 40px auto;
-            }
+        #calendar { max-width: 900px; margin: 40px auto; }
     </style>
-
 </head>
 <body>
     <h2>My Calendar, <span th:text="${username}"></span></h2>
     <div id='calendar'></div>
-        <h3>Tus eventos:</h3>
+    <h3>Tus eventos:</h3>
     <ul>
         <li th:each="ev : ${events}">
             <b th:text="${ev.title}"></b> -
@@ -32,13 +26,14 @@
         <input type="datetime-local" th:field="*{end}" required />
         <button type="submit">Add</button>
     </form>
+
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let calendarEl = document.getElementById('calendar');
             let calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                locale: 'en', 
+                locale: 'en',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
@@ -47,10 +42,6 @@
                 events: {
                     url: '/api/events',
                     method: 'GET',
-                    extraParams: function() {
-                        // Puedes agregar parámetros si quieres
-                        return {};
-                    },
                     failure: function() {
                         alert('There was an error while fetching events!');
                     }
@@ -59,9 +50,6 @@
             calendar.render();
         });
     </script>
-
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
-
 </body>
 </html>
 

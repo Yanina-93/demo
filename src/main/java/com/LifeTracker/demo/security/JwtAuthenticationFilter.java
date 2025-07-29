@@ -24,7 +24,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        System.out.println("Entra al filtro");
+
+        // SOLO aplica el filtro para rutas /api/
+        String path = request.getRequestURI();
+        if (!path.startsWith("/api/")) {
+            // Para rutas que NO son /api/, no hacer nada especial
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        System.out.println("Entra al filtro JWT para: " + path);
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {

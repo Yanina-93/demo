@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/events")
+@RequestMapping("/api/admin/events")
 @Tag(name = "Events", description = "Operations related to events")
 public class EventController {
 
