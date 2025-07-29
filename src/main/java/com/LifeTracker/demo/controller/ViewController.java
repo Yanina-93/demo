@@ -16,4 +16,8 @@ public class ViewController {
     model.addAttribute("username", username);
     return "home";
     }
+    @GetMapping("/calendar")
+    public String calendar() {
+        return "calendar";
+    }
 }
