@@ -7,18 +7,32 @@
         .login-container { width: 350px; margin: 100px auto; padding: 2em; box-shadow: 0 2px 12px #ddd; border-radius: 12px; }
         input { width: 100%; margin: 1em 0; padding: 0.5em; }
         button { width: 100%; padding: 0.5em; }
+        .error { color: red; font-size: 0.95em; margin-top: -10px; margin-bottom: 10px; }
+        .success { color: green; }
     </style>
 </head>
 <body>
-    <div th:replace="fragments/navbar :: navbar"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
     <div class="login-container">
         <h2>Inicia sesión</h2>
-        <form th:action="@{/login}" method="post">
-            <input type="text" name="username" placeholder="Usuario" required />
-            <input type="password" name="password" placeholder="Contraseña" required />
-            <button type="submit">Entrar</button>
+        <form th:action="@{/login}" th:object="${loginRequest}" method="post" autocomplete="off">
+            <!-- Campo EMAIL o USUARIO -->
+            <input type="text" th:field="*{email}" placeholder="Correo electrónico" required />
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></div>
+
+            <!-- Campo CONTRASEÑA -->
+            <input type="password" th:field="*{password}" placeholder="Contraseña" required />
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
+
+            <!-- Mensaje de error general -->
+            <div th:if="${error}" th:text="${error}" class="error"></div>
+            <div th:if="${success}" th:text="${success}" class="success"></div>
+
+            <!-- Mensaje por parámetro (fallback por si acaso) -->
             <div th:if="${param.error}" style="color: red;">Usuario o contraseña incorrectos</div>
             <div th:if="${param.logout}" style="color: green;">Sesión cerrada</div>
+
+            <button type="submit">Entrar</button>
         </form>
     </div>
 </body>

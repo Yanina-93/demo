@@ -9,6 +9,6 @@
 <body>
     <h1>Welcome to Thymeleaf!</h1>
     <p th:text="'Current user: ' + ${username}">Current user: anonymous</p>
-    <div th:replace="fragments/navbar :: navbar"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 </body>
 </html>

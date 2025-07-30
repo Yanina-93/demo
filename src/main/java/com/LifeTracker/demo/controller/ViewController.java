@@ -4,6 +4,9 @@ import com.LifeTracker.demo.dto.LoginRequest;
 import com.LifeTracker.demo.dto.RegisterRequest;
 import com.LifeTracker.demo.model.AppUser;
 import com.LifeTracker.demo.service.UserService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
@@ -12,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
 
 @Controller
 public class ViewController {
@@ -52,7 +56,10 @@ public class ViewController {
 
     // LOGIN (POST - proceso)
     @PostMapping("/login")
-    public String handleLogin(@ModelAttribute("loginRequest") LoginRequest request, Model model) {
+    public String handleLogin(@ModelAttribute("loginRequest") @Valid LoginRequest request, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "login";
+        }
         var userOpt = userService.findByEmail(request.getEmail());
         if (userOpt.isEmpty() || !passwordEncoder.matches(request.getPassword(), userOpt.get().getPasswordHash())) {
             model.addAttribute("error", "Invalid credentials.");
@@ -74,7 +81,10 @@ public class ViewController {
 
     // REGISTER (POST - proceso)
     @PostMapping("/register")
-    public String handleRegister(@ModelAttribute("registerRequest") RegisterRequest request, Model model) {
+    public String handleRegister(@ModelAttribute("registerRequest") @Valid RegisterRequest request, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "register";
+        }
         if (userService.findByEmail(request.getEmail()).isPresent()) {
             model.addAttribute("error", "Email already registered.");
             return "register";

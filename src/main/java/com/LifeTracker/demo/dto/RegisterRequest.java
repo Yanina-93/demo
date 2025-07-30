@@ -1,8 +1,20 @@
 package com.LifeTracker.demo.dto;
 
+import jakarta.validation.constraints.*;
+
 public class RegisterRequest {
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Please enter a valid email")
     private String email;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$", 
+             message = "Password must contain at least one uppercase letter, one lowercase letter, and one digit")
     private String password;
+
+    @NotBlank(message = "Name is required")
     private String name; // si pides nombre en el registro
     private String role;
 

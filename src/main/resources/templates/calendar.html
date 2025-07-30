@@ -10,7 +10,7 @@
 <body>
     <h2>My Calendar, <span th:text="${username}"></span></h2>
     <div id='calendar'></div>
-    <div th:replace="fragments/navbar :: navbar"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
     <h3>Tus eventos:</h3>
     <ul>
         <li th:each="ev : ${events}">

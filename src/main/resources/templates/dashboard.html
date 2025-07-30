@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-    <div th:replace="fragments/navbar :: navbar"></div> <!-- Navbar fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div> <!-- Navbar fragment -->
 
     <h1>Bienvenido, <span th:text="${name}">Usuario</span></h1>
 

@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // Importante: permite sesiones para login web
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**", "/api/motivation/**", "/api/currency/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                .requestMatchers("/", "/home", "/index", "/login", "/register", "/calendar").permitAll()
+                .requestMatchers("/", "/home", "/index", "/login", "/register", "/calendar/view","/calendar/page").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
