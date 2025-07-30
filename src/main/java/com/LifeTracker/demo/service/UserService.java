@@ -1,4 +1,5 @@
 package com.LifeTracker.demo.service;
+import com.LifeTracker.demo.dto.RegisterRequest;
 import com.LifeTracker.demo.model.AppUser;
 import com.LifeTracker.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

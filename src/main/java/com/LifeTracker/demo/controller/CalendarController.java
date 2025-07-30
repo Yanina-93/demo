@@ -12,26 +12,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/calendar")
 public class CalendarController {
 
     @Autowired
     private CalendarEventService eventService;
 
-    // Muestra la vista de calendario
-    @GetMapping("/calendar")
+    // Muestra el calendario con la lista de eventos y el formulario para añadir uno nuevo
+    @GetMapping
     public String showCalendar(Model model, @AuthenticationPrincipal User user) {
         List<CalendarEvent> events = eventService.getEventsForUser(user.getUsername());
         model.addAttribute("events", events);
         model.addAttribute("username", user.getUsername());
-        model.addAttribute("newEvent", new CalendarEvent());
+        model.addAttribute("calendarEvent", new CalendarEvent()); // Para el formulario
         return "calendar";
     }
 
-    // Recibe el formulario
-    @PostMapping("/calendar/add")
-    public String addEvent(@ModelAttribute("newEvent") CalendarEvent event, @AuthenticationPrincipal User user) {
+    // Procesa el formulario de añadir nuevo evento
+    @PostMapping("/add")
+    public String addEvent(@ModelAttribute("calendarEvent") CalendarEvent event, @AuthenticationPrincipal User user) {
         event.setUsername(user.getUsername());
         eventService.saveEvent(event);
         return "redirect:/calendar";
+    }
+
+    // Opcional: Endpoint para API de eventos para FullCalendar (si usas AJAX en el frontend)
+    @GetMapping("/api/events")
+    @ResponseBody
+    public List<CalendarEvent> apiEvents(@AuthenticationPrincipal User user) {
+        return eventService.getEventsForUser(user.getUsername());
     }
 }

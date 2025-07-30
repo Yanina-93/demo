@@ -15,25 +15,63 @@
     <div th:replace="~{fragments/navbar :: navbar}"></div>
     <div class="login-container">
         <h2>Inicia sesión</h2>
-        <form th:action="@{/login}" th:object="${loginRequest}" method="post" autocomplete="off">
-            <!-- Campo EMAIL o USUARIO -->
-            <input type="text" th:field="*{email}" placeholder="Correo electrónico" required />
-            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></div>
+        <form id="loginForm" th:action="@{/login}" method="post" autocomplete="off" novalidate>
+            <!-- Email como username -->
+            <input type="email" name="username" id="username" placeholder="Correo electrónico" required />
+            <div id="emailError" class="error" style="display:none;"></div>
 
-            <!-- Campo CONTRASEÑA -->
-            <input type="password" th:field="*{password}" placeholder="Contraseña" required />
-            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
+            <!-- Campo Contraseña -->
+            <input type="password" name="password" id="password" placeholder="Contraseña" required />
+            <div id="passwordError" class="error" style="display:none;"></div>
 
             <!-- Mensaje de error general -->
             <div th:if="${error}" th:text="${error}" class="error"></div>
             <div th:if="${success}" th:text="${success}" class="success"></div>
 
-            <!-- Mensaje por parámetro (fallback por si acaso) -->
+            <!-- Mensaje por parámetro (fallback) -->
             <div th:if="${param.error}" style="color: red;">Usuario o contraseña incorrectos</div>
             <div th:if="${param.logout}" style="color: green;">Sesión cerrada</div>
 
             <button type="submit">Entrar</button>
         </form>
     </div>
+
+    <script>
+    // Validación de email y contraseña
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+        let valid = true;
+        const emailInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+        // Reset errors
+        emailError.style.display = 'none';
+        passwordError.style.display = 'none';
+
+        // Email validation
+        if (!emailInput.value) {
+            emailError.innerText = 'El correo electrónico es obligatorio';
+            emailError.style.display = 'block';
+            valid = false;
+        } else if (!emailPattern.test(emailInput.value)) {
+            emailError.innerText = 'Ingresa un correo electrónico válido';
+            emailError.style.display = 'block';
+            valid = false;
+        }
+
+        // Password validation
+        if (!passwordInput.value) {
+            passwordError.innerText = 'La contraseña es obligatoria';
+            passwordError.style.display = 'block';
+            valid = false;
+        }
+
+        if (!valid) {
+            e.preventDefault();
+        }
+    });
+    </script>
 </body>
 </html>

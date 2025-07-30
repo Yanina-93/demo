@@ -16,15 +16,15 @@
         <li th:each="ev : ${events}">
             <b th:text="${ev.title}"></b> -
             <span th:text="${ev.start}"></span> -
-            <span th:text="${ev.end}"></span>
+            <span th:text="${ev.finish}"></span>
         </li>
     </ul>
     <h3>Add event</h3>
-    <form th:action="@{/calendar/add}" th:object="${newEvent}" method="post">
+    <form th:action="@{/calendar/add}" th:object="${calendarEvent}" method="post">
         <input type="text" th:field="*{title}" placeholder="Title" required />
         <input type="text" th:field="*{description}" placeholder="Description" />
         <input type="datetime-local" th:field="*{start}" required />
-        <input type="datetime-local" th:field="*{end}" required />
+        <input type="datetime-local" th:field="*{finish}" required />
         <button type="submit">Add</button>
     </form>
 
