@@ -2,10 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Dashboard</title>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-    <h1>Bienvenido, <span th:text="${username}">usuario</span>!</h1>
-    <a href="/logout">Cerrar sesión</a>
-    <!-- Aquí iría tu dashboard y acceso al calendario, formularios, etc -->
+    <div th:replace="fragments/navbar :: navbar"></div> <!-- Navbar fragment -->
+
+    <h1>Bienvenido, <span th:text="${name}">Usuario</span></h1>
+
+    <div class="stats">
+        <div>
+            <h3>Ingresos totales:</h3>
+            <span th:text="${totalIncome}">0</span>
+        </div>
+        <div>
+            <h3>Gastos totales:</h3>
+            <span th:text="${totalExpense}">0</span>
+        </div>
+    </div>
+
+    <div class="actions">
+        <a th:href="@{/income/new}">Añadir Ingreso</a>
+        <a th:href="@{/expense/new}">Añadir Gasto</a>
+        <a th:href="@{/calendar/page}">Ir al Calendario</a>
+        <a th:href="@{/calendar/event/new}">Nuevo Evento</a>
+    </div>
+
+    <h3>Próximos eventos:</h3>
+    <ul>
+        <li th:each="event : ${upcomingEvents}">
+            <span th:text="${event.title}">Evento</span> |
+            <span th:text="${#temporals.format(event.start, 'dd/MM/yyyy HH:mm')}"></span>
+        </li>
+    </ul>
 </body>
 </html>

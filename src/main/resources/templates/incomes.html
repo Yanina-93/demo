@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Incomes</title>
+</head>
+<body>
+    <h2>Ingresos</h2>
+
+    <!-- Formulario para agregar ingreso -->
+    <form th:action="@{/incomes/add}" th:object="${income}" method="post">
+        <input type="number" step="0.01" th:field="*{amount}" placeholder="Monto" required />
+        <input type="text" th:field="*{description}" placeholder="Descripción" />
+        <input type="date" th:field="*{date}" required />
+        <button type="submit">Agregar ingreso</button>
+    </form>
+
+    <h3>Lista de ingresos</h3>
+    <ul>
+        <li th:each="inc : ${incomes}">
+            <b th:text="${inc.amount}"></b> - 
+            <span th:text="${inc.description}"></span> - 
+            <span th:text="${inc.date}"></span>
+        </li>
+    </ul>
+
+    <a href="/dashboard">Volver al Dashboard</a>
+</body>
+</html>

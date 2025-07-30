@@ -5,4 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MotivationalQuoteRepository extends JpaRepository<MotivationalQuote, Long> {
     // Custom methods if needed
+    MotivationalQuote findById(long id);
+    MotivationalQuote findFirstByOrderByIdAsc();
+
+    
 }

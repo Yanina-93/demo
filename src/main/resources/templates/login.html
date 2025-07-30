@@ -10,6 +10,7 @@
     </style>
 </head>
 <body>
+    <div th:replace="fragments/navbar :: navbar"></div>
     <div class="login-container">
         <h2>Inicia sesión</h2>
         <form th:action="@{/login}" method="post">

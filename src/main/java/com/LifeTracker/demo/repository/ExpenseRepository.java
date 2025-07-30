@@ -1,8 +1,12 @@
 package com.LifeTracker.demo.repository;
 
 import com.LifeTracker.demo.model.Expense;
+import com.LifeTracker.demo.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
-    // Methods to find expenses by user ID or other criteria can be added here
+    List<Expense> findByUser(AppUser user);
+    List<Expense> findByUserId(Long userId);
 }
