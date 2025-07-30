@@ -31,8 +31,8 @@ public class Event {
     private Integer duration; // minutos
 
     @ManyToOne
-    @JoinColumn(name = "AppUser_id")
-    private AppUser AppUser;
+    @JoinColumn(name = "appUser_id")
+    private AppUser appUser;
 
     // Getters y setters...
     public Long getId() {
@@ -60,7 +60,7 @@ public class Event {
     }
 
     public AppUser getAppUser() {
-        return  AppUser;
+        return  appUser;
     }
 
     public void setId(Long id) {
@@ -85,8 +85,8 @@ public class Event {
         this.duration = duration;
     }
 
-    public void setAppUser(AppUser AppUser) {
-        this.AppUser = AppUser;
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 
 

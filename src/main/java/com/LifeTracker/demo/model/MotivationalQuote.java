@@ -18,8 +18,8 @@ public class MotivationalQuote {
     private java.sql.Date date;
 
     @ManyToOne
-    @JoinColumn(name = "AppUser_id")
-    private AppUser AppUser; // can be null if global
+    @JoinColumn(name = "appUser_id")
+    private AppUser appUser; // can be null if global
 
     // Getters y setters...
     public Long getId() {
@@ -35,7 +35,7 @@ public class MotivationalQuote {
     }
 
     public AppUser getAppUser() {
-        return AppUser;
+        return appUser;
     }
 
     public void setId(Long id) {
@@ -51,7 +51,7 @@ public class MotivationalQuote {
     }
     
     public void setAppUser(AppUser appUser) {
-        this.AppUser = appUser;
+        this.appUser = appUser;
     }
 
 }

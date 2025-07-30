@@ -32,26 +32,33 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, @AuthenticationPrincipal User userDetails) {
-        // Get current user
+        // Email del usuario autenticado
         String email = userDetails.getUsername();
         AppUser appUser = userRepo.findByEmail(email).orElse(null);
 
-        // Ingresos, gastos, eventos
-        List<Income> incomes = incomeRepo.findByUser(appUser);
-        List<Expense> expenses = expenseRepo.findByUser(appUser);
-        List<CalendarEvent> events = eventRepo.findByUser(appUser);
+        if (appUser == null) {
+            // Si el usuario no existe en la base de datos
+            return "redirect:/login";
+        }
 
-        // Totales
+        // Recupera ingresos y gastos usando el usuario (requiere relación @ManyToOne AppUser)
+        List<Income> incomes = incomeRepo.findByAppUser(appUser);    // Usa findByAppUser
+        List<Expense> expenses = expenseRepo.findByAppUser(appUser); // Usa findByAppUser
+
+        // Recupera eventos usando el campo username (String)
+        List<CalendarEvent> events = eventRepo.findByUsername(email);
+
+        // Calcular totales
         double totalIncome = incomes.stream().mapToDouble(Income::getAmount).sum();
         double totalExpense = expenses.stream().mapToDouble(Expense::getAmount).sum();
 
-        // Los primeros 3 eventos próximos
+        // Próximos 3 eventos
         List<CalendarEvent> upcomingEvents = events.stream()
-            .sorted((e1, e2) -> e1.getStart().compareTo(e2.getStart()))
-            .limit(3)
-            .toList();
+                .sorted((e1, e2) -> e1.getStart().compareTo(e2.getStart()))
+                .limit(3)
+                .toList();
 
-        // Pasar datos al modelo
+        // Pasar datos a la vista
         model.addAttribute("name", appUser.getName());
         model.addAttribute("totalIncome", totalIncome);
         model.addAttribute("totalExpense", totalExpense);

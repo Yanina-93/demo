@@ -40,15 +40,15 @@ public class AppUser {
      private String role; // "USER", "ADMIN", etc.
 
     //Relationships with other entities
-    @OneToMany(mappedBy = "AppUser", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
     private List<Event> events;
-    @OneToMany(mappedBy = "AppUser", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
     private List<Income> incomes;
 
-    @OneToMany(mappedBy = "AppUser", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
     private List<Expense> expenses;
 
-    @OneToMany(mappedBy = "AppUser", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
     private List<MotivationalQuote> motivationalQuotes;
 
     // getters y setters

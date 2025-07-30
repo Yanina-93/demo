@@ -14,6 +14,10 @@ public class CalendarEvent {
     private LocalDateTime finish;
     private String username; // para filtrar por usuario
 
+    @ManyToOne
+    @JoinColumn(name = "user_id") // el nombre puede ser distinto si quieres
+    private AppUser appUser;
+
     // getters y setters
 
 
@@ -63,5 +67,12 @@ public class CalendarEvent {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 }

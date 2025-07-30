@@ -29,7 +29,7 @@ public class Income {
 
     @ManyToOne
     @JoinColumn(name = "appuser_id")
-    private AppUser AppUser;
+    private AppUser appUser;
 
     // Getters y setters...
     public Long getId() {
@@ -53,7 +53,7 @@ public class Income {
     }
 
     public AppUser getAppUser() {
-        return AppUser;
+        return appUser;
     }
 
     public void setId(Long id) {
@@ -73,7 +73,7 @@ public class Income {
         this.category = category;
     }
     public void setAppUser(AppUser appUser) {
-        this.AppUser = appUser;
+        this.appUser = appUser;
     }
 
 

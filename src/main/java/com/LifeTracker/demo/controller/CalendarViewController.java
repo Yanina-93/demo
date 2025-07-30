@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @Controller
-@RequestMapping("/calendar")
+@RequestMapping("/calendar/view")
 public class CalendarViewController {
 
     @Autowired
@@ -27,7 +27,7 @@ public class CalendarViewController {
     }
 
     // Procesar formulario de nuevo evento
-    @PostMapping("/add")
+    @PostMapping("/add-view")
     public String addEvent(@Valid @ModelAttribute("calendarEvent") CalendarEvent event,
                            BindingResult result,
                            Model model) {

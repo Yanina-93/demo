@@ -31,7 +31,7 @@ public class ViewController {
     }
 
     // DASHBOARD
-    @GetMapping("/dashboard")
+    @GetMapping("/dashboard-alt")
     public String dashboard(Model model, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
         model.addAttribute("username", user != null ? user.getUsername() : "Guest");
         return "dashboard";
@@ -62,7 +62,7 @@ public class ViewController {
         model.addAttribute("user", userOpt.get());
         model.addAttribute("username", userOpt.get().getEmail());
         // Redirige a dashboard tras login exitoso
-        return "redirect:/dashboard";
+        return "redirect:/dashboard-alt";
     }
 
     // REGISTER (GET - formulario)
