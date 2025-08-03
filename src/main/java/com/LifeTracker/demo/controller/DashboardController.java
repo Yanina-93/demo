@@ -1,8 +1,8 @@
 package com.LifeTracker.demo.controller;
 
-import com.LifeTracker.demo.model.AppUser;
-import com.LifeTracker.demo.model.Income;
 import com.LifeTracker.demo.model.Expense;
+import com.LifeTracker.demo.model.Income;
+import com.LifeTracker.demo.model.AppUser;
 import com.LifeTracker.demo.model.CalendarEvent;
 import com.LifeTracker.demo.repository.IncomeRepository;
 import com.LifeTracker.demo.repository.ExpenseRepository;
@@ -16,9 +16,13 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.io.IOException;
 
 @Controller
 public class DashboardController {
@@ -34,7 +38,7 @@ public class DashboardController {
     @Autowired
     private WalletService walletService;
 
-
+    // DASHBOARD PRINCIPAL
     @GetMapping("/dashboard")
     public String dashboard(Model model, @AuthenticationPrincipal User userDetails) {
         // Email del usuario autenticado
@@ -46,9 +50,9 @@ public class DashboardController {
             return "redirect:/login";
         }
 
-        // Recupera ingresos y gastos usando el usuario (requiere relación @ManyToOne AppUser)
-        List<Income> incomes = incomeRepo.findByAppUser(appUser);    // Usa findByAppUser
-        List<Expense> expenses = expenseRepo.findByAppUser(appUser); // Usa findByAppUser
+        // Recupera ingresos y gastos usando el usuario
+        List<Income> incomes = incomeRepo.findByAppUser(appUser);    
+        List<Expense> expenses = expenseRepo.findByAppUser(appUser); 
 
         // Recupera eventos usando el campo username (String)
         List<CalendarEvent> events = eventRepo.findByUsername(email);
@@ -63,11 +67,10 @@ public class DashboardController {
                 .limit(3)
                 .toList();
 
-        //WALLET
+        // WALLET
         BigDecimal saldo = walletService.getCurrentBalance(email);
-        
 
-        // Pasar datos a la vista
+        // Agregar atributos al modelo
         model.addAttribute("name", appUser.getName());
         model.addAttribute("totalIncome", totalIncome);
         model.addAttribute("totalExpense", totalExpense);
@@ -78,6 +81,59 @@ public class DashboardController {
         model.addAttribute("username", email);
         model.addAttribute("calendarEvent", new CalendarEvent());
         model.addAttribute("saldo", saldo);
+
         return "dashboard";
     }
+
+    // Doewnload summary as Excel
+    @GetMapping("/dashboard/download-summary")
+    public void downloadSummary(@AuthenticationPrincipal User user, HttpServletResponse response) throws IOException {
+        String email = user.getUsername();
+        AppUser appUser = userRepo.findByEmail(email).orElse(null);
+        if (appUser == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not authenticated");
+            return;
+        }
+        List<Expense> expenses = expenseRepo.findByAppUser(appUser);
+        List<Income> incomes = incomeRepo.findByAppUser(appUser);
+
+        Workbook workbook = new XSSFWorkbook();
+
+        // Hoja de Gastos
+        Sheet expenseSheet = workbook.createSheet("Expenses");
+        Row header1 = expenseSheet.createRow(0);
+        header1.createCell(0).setCellValue("Date");
+        header1.createCell(1).setCellValue("Category");
+        header1.createCell(2).setCellValue("Description");
+        header1.createCell(3).setCellValue("Amount");
+        int rowIdx = 1;
+        for (Expense expense : expenses) {
+            Row row = expenseSheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(expense.getDate().toString());
+            row.createCell(1).setCellValue(expense.getCategory());
+            row.createCell(2).setCellValue(expense.getDescription());
+            row.createCell(3).setCellValue(expense.getAmount().doubleValue());
+        }
+
+        // Hoja de Ingresos
+        Sheet incomeSheet = workbook.createSheet("Incomes");
+        Row header2 = incomeSheet.createRow(0);
+        header2.createCell(0).setCellValue("Date");
+        header2.createCell(1).setCellValue("Description");
+        header2.createCell(2).setCellValue("Amount");
+        rowIdx = 1;
+        for (Income income : incomes) {
+            Row row = incomeSheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(income.getDate().toString());
+            row.createCell(1).setCellValue(income.getDescription());
+            row.createCell(2).setCellValue(income.getAmount().doubleValue());
+        }
+
+        // Configura la respuesta HTTP para descargar el archivo
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=wallet-summary.xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
 }
