@@ -22,6 +22,7 @@
     <h3>Add event</h3>
     <form th:action="@{/calendar/add}" th:object="${calendarEvent}" method="post">
         <input type="text" th:field="*{title}" placeholder="Title" required />
+        <input type="text" th:field="*{type}" placeholder="Type" required />
         <input type="text" th:field="*{description}" placeholder="Description" />
         <input type="datetime-local" th:field="*{start}" required />
         <input type="datetime-local" th:field="*{finish}" required />

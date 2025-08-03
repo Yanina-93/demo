@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface IncomeRepository extends JpaRepository<Income, Long> {
-    List<Income> findByAppUser(AppUser user);
-    @Query("SELECT COALESCE(SUM(i.amount),0) FROM Income i WHERE i.username = :username")
-    BigDecimal sumByUsername(@Param("username") String username);
+    List<Income> findByAppUser(AppUser appUser);
+    @Query("SELECT COALESCE(SUM(i.amount),0) FROM Income i WHERE i.appUser.email = :email")
+    BigDecimal sumByAppUserEmail(@Param("email") String email);
 }

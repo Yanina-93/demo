@@ -64,6 +64,9 @@ public class DashboardController {
         double totalIncome = incomes.stream().mapToDouble(Income::getAmount).sum();
         double totalExpense = expenses.stream().mapToDouble(Expense::getAmount).sum();
 
+        System.out.println("Incomes size: " + incomes.size());
+        System.out.println("Expenses size: " + expenses.size());
+
         // Next 3 upcoming events
         List<CalendarEvent> upcomingEvents = events.stream()
                 .sorted((e1, e2) -> e1.getStart().compareTo(e2.getStart()))
@@ -75,15 +78,17 @@ public class DashboardController {
 
         // Time spent in each category
         Map<String, Duration> categoryDurations = events.stream()
-                .collect(Collectors.groupingBy(CalendarEvent::getType,
-                        Collectors.summingLong(e -> Duration.between(e.getStart(), e.getFinish()).toMillis())))
-                .entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                        e -> Duration.ofMillis(e.getValue())));
+        .collect(Collectors.groupingBy(
+                e -> e.getType() == null ? "Non Type event" : e.getType(),
+                Collectors.summingLong(e -> Duration.between(e.getStart(), e.getFinish()).toMillis())
+        ))
+        .entrySet().stream()
+        .collect(Collectors.toMap(Map.Entry::getKey, e -> Duration.ofMillis(e.getValue())));
+
 
         // Add attributes to the model
         model.addAttribute("name", appUser.getName());
-        model.addAttribute("totalIncome", totalIncome);
+        model.addAttribute("totalIncome", totalIncome );
         model.addAttribute("totalExpense", totalExpense);
         model.addAttribute("upcomingEvents", upcomingEvents);
         model.addAttribute("incomes", incomes);
@@ -91,10 +96,9 @@ public class DashboardController {
         model.addAttribute("events", events);
         model.addAttribute("username", email);
         model.addAttribute("calendarEvent", new CalendarEvent());
-        model.addAttribute("saldo", saldo);
         model.addAttribute("categoryDurations", categoryDurations);
-
-        
+        model.addAttribute("saldo", saldo);
+        System.out.println("Saldo para " + email + ": " + saldo);
         return "dashboard";
     }
 
