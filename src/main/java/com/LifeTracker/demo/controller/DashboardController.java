@@ -8,6 +8,7 @@ import com.LifeTracker.demo.repository.IncomeRepository;
 import com.LifeTracker.demo.repository.ExpenseRepository;
 import com.LifeTracker.demo.repository.CalendarEventRepository;
 import com.LifeTracker.demo.repository.UserRepository;
+import com.LifeTracker.demo.service.WalletService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -29,6 +31,9 @@ public class DashboardController {
     private CalendarEventRepository eventRepo;
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private WalletService walletService;
+
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, @AuthenticationPrincipal User userDetails) {
@@ -58,12 +63,21 @@ public class DashboardController {
                 .limit(3)
                 .toList();
 
+        //WALLET
+        BigDecimal saldo = walletService.getCurrentBalance(email);
+        
+
         // Pasar datos a la vista
         model.addAttribute("name", appUser.getName());
         model.addAttribute("totalIncome", totalIncome);
         model.addAttribute("totalExpense", totalExpense);
         model.addAttribute("upcomingEvents", upcomingEvents);
-
+        model.addAttribute("incomes", incomes);
+        model.addAttribute("expenses", expenses);
+        model.addAttribute("events", events);
+        model.addAttribute("username", email);
+        model.addAttribute("calendarEvent", new CalendarEvent());
+        model.addAttribute("saldo", saldo);
         return "dashboard";
     }
 }

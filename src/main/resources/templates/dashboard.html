@@ -7,30 +7,31 @@
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div> <!-- Navbar fragment -->
 
-    <h1>Bienvenido, <span th:text="${name}">Usuario</span></h1>
+    <h1>Welcome back <span th:text="${name}">Usuario</span></h1>
 
     <div class="stats">
         <div>
-            <h3>Ingresos totales:</h3>
+            <h3>Total income:</h3>
             <span th:text="${totalIncome}">0</span>
         </div>
         <div>
-            <h3>Gastos totales:</h3>
+            <h3>Total expenses:</h3>
             <span th:text="${totalExpense}">0</span>
         </div>
     </div>
 
     <div class="actions">
-        <a th:href="@{/incomes}">Añadir Ingreso</a>
-        <a th:href="@{/expenses}">Añadir Gasto</a>
-        <a th:href="@{/calendar}">Ir al Calendario</a>
-        <a th:href="@{/calendar/event/new}">Nuevo Evento</a>
+        <a th:href="@{/incomes}">Add income</a>
+        <a th:href="@{/expenses}">Add expense</a>
+        <a th:href="@{/calendar}">Go to calendar</a>
+        <a th:href="@{/calendar/event/new}">New event</a>
     </div>
+    <h3>Current balance on wallet: <span th:text="${saldo}"></span> €</h3>
 
-    <h3>Próximos eventos:</h3>
+    <h3>Upcoming events:</h3>
     <ul>
         <li th:each="event : ${upcomingEvents}">
-            <span th:text="${event.title}">Evento</span> |
+            <span th:text="${event.title}">Event</span> |
             <span th:text="${#temporals.format(event.start, 'dd/MM/yyyy HH:mm')}"></span>
         </li>
     </ul>
