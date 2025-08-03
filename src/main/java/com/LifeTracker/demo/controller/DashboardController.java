@@ -23,6 +23,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.List;
 import java.io.IOException;
+import java.time.Duration;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class DashboardController {
@@ -41,7 +44,7 @@ public class DashboardController {
     // DASHBOARD PRINCIPAL
     @GetMapping("/dashboard")
     public String dashboard(Model model, @AuthenticationPrincipal User userDetails) {
-        // Email del usuario autenticado
+        // Get the authenticated user's email
         String email = userDetails.getUsername();
         AppUser appUser = userRepo.findByEmail(email).orElse(null);
 
@@ -50,18 +53,18 @@ public class DashboardController {
             return "redirect:/login";
         }
 
-        // Recupera ingresos y gastos usando el usuario
+        // get incomes and expenses for the user
         List<Income> incomes = incomeRepo.findByAppUser(appUser);    
         List<Expense> expenses = expenseRepo.findByAppUser(appUser); 
 
-        // Recupera eventos usando el campo username (String)
+        // Events per user
         List<CalendarEvent> events = eventRepo.findByUsername(email);
 
-        // Calcular totales
+        // Total 
         double totalIncome = incomes.stream().mapToDouble(Income::getAmount).sum();
         double totalExpense = expenses.stream().mapToDouble(Expense::getAmount).sum();
 
-        // Próximos 3 eventos
+        // Next 3 upcoming events
         List<CalendarEvent> upcomingEvents = events.stream()
                 .sorted((e1, e2) -> e1.getStart().compareTo(e2.getStart()))
                 .limit(3)
@@ -70,7 +73,15 @@ public class DashboardController {
         // WALLET
         BigDecimal saldo = walletService.getCurrentBalance(email);
 
-        // Agregar atributos al modelo
+        // Time spent in each category
+        Map<String, Duration> categoryDurations = events.stream()
+                .collect(Collectors.groupingBy(CalendarEvent::getType,
+                        Collectors.summingLong(e -> Duration.between(e.getStart(), e.getFinish()).toMillis())))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        e -> Duration.ofMillis(e.getValue())));
+
+        // Add attributes to the model
         model.addAttribute("name", appUser.getName());
         model.addAttribute("totalIncome", totalIncome);
         model.addAttribute("totalExpense", totalExpense);
@@ -81,11 +92,13 @@ public class DashboardController {
         model.addAttribute("username", email);
         model.addAttribute("calendarEvent", new CalendarEvent());
         model.addAttribute("saldo", saldo);
+        model.addAttribute("categoryDurations", categoryDurations);
 
+        
         return "dashboard";
     }
 
-    // Doewnload summary as Excel
+    // Download summary as Excel
     @GetMapping("/dashboard/download-summary")
     public void downloadSummary(@AuthenticationPrincipal User user, HttpServletResponse response) throws IOException {
         String email = user.getUsername();

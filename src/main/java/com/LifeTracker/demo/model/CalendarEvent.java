@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class CalendarEvent {
     @Id @GeneratedValue
     private Long id;
+    private String type;
     private String title;
     private String description;
     private LocalDateTime start;
@@ -74,5 +75,13 @@ public class CalendarEvent {
 
     public void setAppUser(AppUser appUser) {
         this.appUser = appUser;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

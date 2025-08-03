@@ -3,6 +3,7 @@
 <head>
     <title>Dashboard</title>
     <link rel="stylesheet" href="/css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div> <!-- Navbar fragment -->
@@ -36,5 +37,53 @@
             <span th:text="${#temporals.format(event.start, 'dd/MM/yyyy HH:mm')}"></span>
         </li>
     </ul>
+
+    <div style="max-width:400px; margin: 30px auto;">
+        <h3>Time distribution by activity (events)</h3>
+        <canvas id="pieChart"></canvas>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // categoryDurations es un Map<String, Double> pasado desde el controlador
+        var pieLabels = /*[[${categoryDurations.keySet()}]]*/ [];
+        var pieData = /*[[${categoryDurations.values()}]]*/ [];
+        // Para que Chart.js lo reciba como array normal
+        pieLabels = Array.from(pieLabels);
+        pieData = Array.from(pieData);
+
+        // Gráfico pastel de Chart.js
+        const ctx = document.getElementById('pieChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    data: pieData,
+                    backgroundColor: [
+                        '#FF6384','#36A2EB','#FFCE56','#7FD674','#AF7AC5','#F1948A'
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                // Muestra horas y porcentaje
+                                let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                let value = context.parsed;
+                                let percent = total > 0 ? (value / total * 100).toFixed(1) : 0;
+                                return `${context.label}: ${value.toFixed(2)} hrs (${percent}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        /*]]>*/
+    </script>
 </body>
 </html>
