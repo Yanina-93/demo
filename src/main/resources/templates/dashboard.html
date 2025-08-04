@@ -182,5 +182,37 @@
         document.addEventListener('DOMContentLoaded', loadMyQuotes);
         </script>
 
+
+    <button onclick="showCurrencyPopup()">Ver tasa EUR/CLP</button>
+
+    <div id="currencyPopup" style="display:none; position:fixed; top:30%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:30px; box-shadow:0 2px 18px #0002; border-radius:15px;">
+        <h3>Conversión EUR/CLP</h3>
+        <div id="currencyContent">Cargando...</div>
+        <button onclick="closeCurrencyPopup()">Cerrar</button>
+    </div>
+
+    <script>
+    function showCurrencyPopup() {
+        document.getElementById('currencyContent').innerText = "Cargando...";
+        document.getElementById('currencyPopup').style.display = 'block';
+
+        fetch('/api/currency/eur-clp')
+        .then(res => res.json())
+        .then(rate => {
+            document.getElementById('currencyContent').innerHTML = `
+            <b>1 EUR = ${rate} CLP</b>
+            `;
+        })
+        .catch(() => {
+            document.getElementById('currencyContent').innerText = "No se pudo obtener la tasa.";
+        });
+    }
+
+    function closeCurrencyPopup() {
+        document.getElementById('currencyPopup').style.display = 'none';
+    }
+    </script>
+
+
 </body>
 </html>
