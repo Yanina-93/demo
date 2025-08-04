@@ -1,6 +1,9 @@
 package com.LifeTracker.demo.model;
 
 import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Entity
@@ -18,6 +21,7 @@ public class MotivationalQuote {
     private java.sql.Date date;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "appUser_id")
     private AppUser appUser; // can be null if global
 

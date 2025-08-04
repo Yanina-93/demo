@@ -1,23 +1,34 @@
 package com.LifeTracker.demo.service;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class MotivationService {
-    private final String ZEN_QUOTES_URL = "https://zenquotes.io/api/random";
 
-    public String getMotivationalQuote() {
-        RestTemplate restTemplate = new RestTemplate();
-        String response = restTemplate.getForObject(ZEN_QUOTES_URL, String.class);
+    private final RestTemplate restTemplate = new RestTemplate();
 
-        JSONArray arr = new JSONArray(response);
-        JSONObject obj = arr.getJSONObject(0);
-
-        String quote = obj.getString("q");
-        String author = obj.getString("a");
-
-        return quote + " — " + author;
+    public String fetchExternalQuote() {
+        String apiUrl = "https://zenquotes.io/api/random";
+        ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            String body = response.getBody();
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode root = mapper.readTree(body);
+                if (root.isArray() && root.size() > 0) {
+                    JsonNode quoteNode = root.get(0);
+                    String quote = quoteNode.get("q").asText();
+                    String author = quoteNode.get("a").asText();
+                    return quote + " — " + author;
+                }
+            } catch (Exception e) {
+                return "Error parsing quote: " + e.getMessage();
+            }
+        }
+        return "Keep going! (Default quote)";
     }
+
 }

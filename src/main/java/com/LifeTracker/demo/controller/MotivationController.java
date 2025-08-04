@@ -11,8 +11,8 @@ public class MotivationController {
     @Autowired
     private MotivationService motivationService;
 
-    @GetMapping("/quote")
-    public String getMotivationalQuote() {
-        return motivationService.getMotivationalQuote();
+    @GetMapping("/random-quote")
+    public String getRandomExternalQuote() {
+        return motivationService.fetchExternalQuote();
     }
 }
