@@ -21,7 +21,7 @@ public class CurrencyService {
             org.json.JSONObject rates = obj.getJSONObject("rates");
             return rates.getDouble("CLP");
         } else {
-            throw new RuntimeException("Error consultando API de divisas: " + response);
+            throw new RuntimeException("Error: " + response);
         }
     }
 }

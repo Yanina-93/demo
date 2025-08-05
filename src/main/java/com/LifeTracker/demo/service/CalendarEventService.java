@@ -1,6 +1,8 @@
 package com.LifeTracker.demo.service;
 
+import com.LifeTracker.demo.model.AppUser;
 import com.LifeTracker.demo.model.CalendarEvent;
+import com.LifeTracker.demo.repository.UserRepository;
 import com.LifeTracker.demo.repository.CalendarEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +13,13 @@ public class CalendarEventService {
     @Autowired
     private CalendarEventRepository repo;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public List<CalendarEvent> getEventsForUser(String username) {
-        return repo.findByUsername(username);
+        // Encuentra el usuario por email (o username, según tu lógica)
+        AppUser appUser = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User not found: " + username));
+        return repo.findByAppUser(appUser);
     }
 
     public CalendarEvent saveEvent(CalendarEvent event) {

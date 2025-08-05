@@ -58,7 +58,7 @@ public class DashboardController {
         List<Expense> expenses = expenseRepo.findByAppUser(appUser); 
 
         // Events per user
-        List<CalendarEvent> events = eventRepo.findByUsername(email);
+        List<CalendarEvent> events = eventRepo.findByAppUser(appUser);
 
         // Total 
         double totalIncome = incomes.stream().mapToDouble(Income::getAmount).sum();
@@ -70,7 +70,7 @@ public class DashboardController {
         // Next 3 upcoming events
         List<CalendarEvent> upcomingEvents = events.stream()
                 .sorted((e1, e2) -> e1.getStart().compareTo(e2.getStart()))
-                .limit(3)
+                .limit(10)
                 .toList();
 
         // WALLET

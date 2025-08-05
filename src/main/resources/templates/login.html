@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <title>Login | UniLifeTracker</title>
     <style>
         body { font-family: Arial, sans-serif; }
@@ -14,14 +15,14 @@
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
     <div class="login-container">
-        <h2>Inicia sesión</h2>
+        <h2>Log in</h2>
         <form id="loginForm" th:action="@{/login}" method="post" autocomplete="off" novalidate>
             <!-- Email como username -->
-            <input type="email" name="username" id="username" placeholder="Correo electrónico" required />
+            <input type="email" name="username" id="username" placeholder="Email" required />
             <div id="emailError" class="error" style="display:none;"></div>
 
             <!-- Campo Contraseña -->
-            <input type="password" name="password" id="password" placeholder="Contraseña" required />
+            <input type="password" name="password" id="password" placeholder="Password" required />
             <div id="passwordError" class="error" style="display:none;"></div>
 
             <!-- Mensaje de error general -->
@@ -29,10 +30,10 @@
             <div th:if="${success}" th:text="${success}" class="success"></div>
 
             <!-- Mensaje por parámetro (fallback) -->
-            <div th:if="${param.error}" style="color: red;">Usuario o contraseña incorrectos</div>
-            <div th:if="${param.logout}" style="color: green;">Sesión cerrada</div>
+            <div th:if="${param.error}" style="color: red;">Invalid username or password</div>
+            <div th:if="${param.logout}" style="color: rgb(32, 0, 128);">Session closed</div>
 
-            <button type="submit">Entrar</button>
+            <button type="submit">Log in</button>
         </form>
     </div>
 
@@ -52,18 +53,18 @@
 
         // Email validation
         if (!emailInput.value) {
-            emailError.innerText = 'El correo electrónico es obligatorio';
+            emailError.innerText = 'Email is required';
             emailError.style.display = 'block';
             valid = false;
         } else if (!emailPattern.test(emailInput.value)) {
-            emailError.innerText = 'Ingresa un correo electrónico válido';
+            emailError.innerText = 'Enter a valid email';
             emailError.style.display = 'block';
             valid = false;
         }
 
         // Password validation
         if (!passwordInput.value) {
-            passwordError.innerText = 'La contraseña es obligatoria';
+            passwordError.innerText = 'Password is required';
             passwordError.style.display = 'block';
             valid = false;
         }

@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CalendarEventRepository extends JpaRepository<CalendarEvent, Long> {
-   //List<CalendarEvent> findByUser(AppUser user);
-    List<CalendarEvent> findByUsername(String username);
+   List<CalendarEvent> findByAppUser(AppUser appUser);
+
     
 }
 

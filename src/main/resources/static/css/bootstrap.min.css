@@ -48,8 +48,11 @@
     transition: background 0.2s;
 }
 .reload-quotes-btn:hover {
-    background: #2764a3;
+    background: #2727a3;
 }
 
 
-
+.navbar-custom-bg {
+  background: linear-gradient(90deg, #1ee8f2df 0%, #39c6a3 100%);
+  color: rgb(179, 245, 236);
+}
