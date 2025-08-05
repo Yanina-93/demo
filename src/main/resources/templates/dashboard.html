@@ -1,224 +1,3 @@
-<!-- <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-</head>
-<body>
-    <div th:replace="~{fragments/navbar :: navbar}"></div> 
-
-    <h1>Welcome back <span th:text="${name}">Usuario</span></h1>
-
-    <div class="stats">
-        <div>
-            <h3>Total income:</h3>
-            <span th:text="${totalIncome}">0</span>
-        </div>
-        <div>
-            <h3>Total expenses:</h3>
-            <span th:text="${totalExpense}">0</span>
-        </div>
-    </div>
-
-    <div class="actions">
-        <a th:href="@{/incomes}">Add income</a>
-        <a th:href="@{/expenses}">Add expense</a>
-        <a th:href="@{/calendar}">Go to calendar</a>
-        <a th:href="@{/calendar/event/new}">New event</a>
-    </div>
-
-    <h3>Current balance on wallet: <span th:text="${saldo}"></span> €</h3>
-   
-
-    <a href="/dashboard/download-summary" class="btn btn-primary">Download Summary as Excel</a>
-
-    <h3>Upcoming events:</h3>
-    <ul>
-        <li th:each="event : ${upcomingEvents}">
-            <span th:text="${event.title}">Event</span> |
-            <span th:text="${#temporals.format(event.start, 'dd/MM/yyyy HH:mm')}"></span>
-        </li>
-    </ul>
-
-    <div style="max-width:400px; margin: 30px auto;">
-        <h3>Time distribution by activity (events)</h3>
-        <canvas id="pieChart"></canvas>
-    </div>
-
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        // categoryDurations es un Map<String, Double> pasado desde el controlador
-        var pieLabels = /*[[${categoryDurations.keySet()}]]*/ [];
-        var pieData = /*[[${categoryDurations.values()}]]*/ [];
-        // Para que Chart.js lo reciba como array normal
-        pieLabels = Array.from(pieLabels);
-        pieData = Array.from(pieData);
-
-        // Gráfico pastel de Chart.js
-        const ctx = document.getElementById('pieChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: pieLabels,
-                datasets: [{
-                    data: pieData,
-                    backgroundColor: [
-                        '#FF6384','#36A2EB','#FFCE56','#7FD674','#AF7AC5','#F1948A'
-                    ],
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                // Muestra horas y porcentaje
-                                let total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                let value = context.parsed;
-                                let percent = total > 0 ? (value / total * 100).toFixed(1) : 0;
-                                return `${context.label}: ${value.toFixed(2)} hrs (${percent}%)`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        /*]]>*/
-    </script>
-
-    <button onclick="showQuotePopup()">Get some Motivation</button>
-
-    <div id="quotePopup"
-        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:9999; justify-content:center; align-items:center;">
-        <div style="background:#fff; border-radius:18px; padding:28px 20px; min-width:290px; max-width:80vw; box-shadow:0 4px 32px #0003; text-align:center; position:relative;">
-            <p id="quoteText" style="font-size:1.1rem; margin-bottom:20px;"></p>
-            <button onclick="saveQuote()" style="margin: 0 6px; background:#4b9cff; color:#fff; border:none; padding:8px 20px; border-radius:7px; cursor:pointer;">Save Quote</button>
-            <button onclick="closeQuotePopup()" style="margin: 0 6px; background:#ccc; color:#333; border:none; padding:8px 20px; border-radius:7px; cursor:pointer;">Close</button>
-            <span id="saveStatus" style="display:block; margin-top:10px; color:green; font-size:0.96rem;"></span>
-        </div>
-    </div>
-
-    <script>
-    function showQuotePopup() {
-        document.getElementById('saveStatus').innerText = '';
-        document.getElementById('quoteText').innerText = 'Loading...';
-        document.getElementById('quotePopup').style.display = 'flex';
-
-        fetch('/api/motivation/random-quote')
-            .then(res => res.text())
-            .then(text => {
-                document.getElementById('quoteText').innerText = text;
-            })
-            .catch(() => {
-                document.getElementById('quoteText').innerText = "Couldn't load quote. Try again!";
-            });
-    }
-
-    function closeQuotePopup() {
-        document.getElementById('quotePopup').style.display = 'none';
-    }
-
-    function saveQuote() {
-        const quoteText = document.getElementById('quoteText').innerText;
-        fetch('/api/quotes', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ text: quoteText })
-        })
-        .then(response => {
-            if (response.ok) {
-                document.getElementById('saveStatus').innerText = 'Quote Saved!';
-            } else {
-                document.getElementById('saveStatus').innerText = 'Failed to save quote.';
-            }
-            setTimeout(closeQuotePopup, 1500);
-        })
-        .catch(() => {
-            document.getElementById('saveStatus').innerText = 'Error saving quote.';
-        });
-    }
-    </script>
-
-    <section class="my-quotes-section">
-        <h3>My Motivational Quotes</h3>
-        <div id="myQuotesContainer" class="quote-list"></div>
-        <button onclick="loadMyQuotes()" class="reload-quotes-btn">🔄 Reload Quotes</button>
-    </section>
-
-    <script>
-        function loadMyQuotes() {
-        fetch('/api/quotes/my')
-            .then(res => res.json())
-            .then(list => {
-                const cont = document.getElementById('myQuotesContainer');
-                if (!list.length) {
-                    cont.innerHTML = "<p>No motivational quotes saved yet!</p>";
-                    return;
-                }
-                cont.innerHTML = "<ul>" + 
-                    list.map(q => `
-                        <li>
-                            ${q.text}
-                            <button onclick="deleteMyQuote(${q.id})">🗑️</button>
-                        </li>
-                    `).join('') + "</ul>";
-            });
-    }
-
-
-        // Eliminar quote
-        function deleteQuote(id) {
-            if (!confirm('Are you sure you want to delete this quote?')) return;
-            fetch('/api/quotes/' + id, { method: 'DELETE' })
-                .then(() => loadMyQuotes());
-        }
-
-        // Recarga automática al cargar la página
-        document.addEventListener('DOMContentLoaded', loadMyQuotes);
-        </script>
-
-
-    <button onclick="showCurrencyPopup()">Ver tasa EUR/CLP</button>
-
-    <div id="currencyPopup" style="display:none; position:fixed; top:30%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:30px; box-shadow:0 2px 18px #0002; border-radius:15px;">
-        <h3>Conversión EUR/CLP</h3>
-        <div id="currencyContent">Cargando...</div>
-        <button onclick="closeCurrencyPopup()">Cerrar</button>
-    </div>
-
-    <script>
-    function showCurrencyPopup() {
-        document.getElementById('currencyContent').innerText = "Cargando...";
-        document.getElementById('currencyPopup').style.display = 'block';
-
-        fetch('/api/currency/eur-clp')
-        .then(res => res.json())
-        .then(rate => {
-            document.getElementById('currencyContent').innerHTML = `
-            <b>1 EUR = ${rate} CLP</b>
-            `;
-        })
-        .catch(() => {
-            document.getElementById('currencyContent').innerText = "No se pudo obtener la tasa.";
-        });
-    }
-
-    function closeCurrencyPopup() {
-        document.getElementById('currencyPopup').style.display = 'none';
-    }
-    </script>
-
-    <div th:replace="~{fragments/footer :: footer}"></div>
-</body>
-</html> -->
-
-
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -226,7 +5,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="bg-green-50 min-h-screen flex flex-col">
     <!-- Navbar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
@@ -284,9 +63,9 @@
         </section>
 
         <!-- 2. Gráfico pastel de distribución por actividad -->
-        <section class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center">
+        <section class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center w-70">
             <h3 class="text-lg font-semibold text-sky-700 mb-2">Time Distribution by Activity</h3>
-            <canvas id="pieChart" width="50" height="50"></canvas>
+            <canvas id="pieChart" width="500" height="500"></canvas>
         </section>
 
         <!-- 3. Próximos eventos -->
@@ -357,7 +136,7 @@
                 }]
             },
             options: {
-                responsive: true,
+                responsive: false,
                 plugins: {
                     legend: { position: 'bottom' },
                     tooltip: {

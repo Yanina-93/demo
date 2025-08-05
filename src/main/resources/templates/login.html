@@ -1,40 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <title>Login | UniLifeTracker</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .login-container { width: 350px; margin: 100px auto; padding: 2em; box-shadow: 0 2px 12px #ddd; border-radius: 12px; }
-        input { width: 100%; margin: 1em 0; padding: 0.5em; }
-        button { width: 100%; padding: 0.5em; }
-        .error { color: red; font-size: 0.95em; margin-top: -10px; margin-bottom: 10px; }
-        .success { color: green; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-gradient-to-b from-green-50 to-indigo-100 min-h-screen">
     <div th:replace="~{fragments/navbar :: navbar}"></div>
-    <div class="login-container">
-        <h2>Log in</h2>
-        <form id="loginForm" th:action="@{/login}" method="post" autocomplete="off" novalidate>
-            <!-- Email como username -->
-            <input type="email" name="username" id="username" placeholder="Email" required />
-            <div id="emailError" class="error" style="display:none;"></div>
-
-            <!-- Campo Contraseña -->
-            <input type="password" name="password" id="password" placeholder="Password" required />
-            <div id="passwordError" class="error" style="display:none;"></div>
-
-            <!-- Mensaje de error general -->
-            <div th:if="${error}" th:text="${error}" class="error"></div>
-            <div th:if="${success}" th:text="${success}" class="success"></div>
-
-            <!-- Mensaje por parámetro (fallback) -->
-            <div th:if="${param.error}" style="color: red;">Invalid username or password</div>
-            <div th:if="${param.logout}" style="color: rgb(32, 0, 128);">Session closed</div>
-
-            <button type="submit">Log in</button>
-        </form>
+    <div class="flex flex-col items-center justify-center min-h-[80vh]">
+        <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-sm">
+            <h2 class="text-2xl font-bold text-blue-600 mb-4 text-center">Log in to UniLifeTracker</h2>
+            <form id="loginForm" th:action="@{/login}" method="post" autocomplete="off" novalidate>
+                <input type="email" name="username" id="username" placeholder="Email" required class="w-full mb-3 px-3 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-300"/>
+                <div id="emailError" class="error text-sm text-red-500 mb-2" style="display:none;"></div>
+                <input type="password" name="password" id="password" placeholder="Password" required class="w-full mb-3 px-3 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-300"/>
+                <div id="passwordError" class="error text-sm text-red-500 mb-2" style="display:none;"></div>
+                <div th:if="${error}" th:text="${error}" class="text-red-500 text-sm mb-2"></div>
+                <div th:if="${success}" th:text="${success}" class="text-green-600 text-sm mb-2"></div>
+                <div th:if="${param.error}" class="text-red-500 text-sm mb-2">Invalid username or password</div>
+                <div th:if="${param.logout}" class="text-indigo-800 text-sm mb-2">Session closed</div>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition">Log in</button>
+            </form>
+            <div class="text-center mt-4">
+                <span class="text-sm text-slate-700">Don't have an account?</span>
+                <a href="/register" class="text-blue-600 underline ml-1">Register</a>
+            </div>
+            <div class="text-center mt-1">
+                <a href="/" class="text-blue-400 underline text-xs">← Back to Home</a>
+            </div>
+        </div>
     </div>
 
     <script>

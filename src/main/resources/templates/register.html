@@ -4,48 +4,33 @@
     <meta charset="UTF-8">
     <title>Register | UniLifeTracker</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    
-    <style>
-        .error-message { color: #dc3545; font-size: 0.95em; }
-        .success-message { color: #198754; }
-    </style>
 </head>
-<body>
+<body class="bg-gradient-to-b from-indigo-50 to-pink-100 min-h-screen">
     <div th:replace="~{fragments/navbar :: navbar}"></div>
-    <div class="container mt-5" style="max-width: 400px;">
-        <h3 class="mb-4 text-center">Create Account</h3>
-        <form id="registerForm" autocomplete="off">
-            <!-- Full Name -->
-            <div class="mb-3">
-                <label for="name" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="name" required minlength="2">
-                <div id="nameError" class="error-message"></div>
+    <div class="flex flex-col items-center justify-center min-h-[80vh]">
+        <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-sm">
+            <h3 class="text-xl font-bold text-center text-pink-700 mb-4">Create Your Account</h3>
+            <form id="registerForm" autocomplete="off">
+                <input type="text" id="name" placeholder="Full Name" required minlength="2" class="w-full mb-3 px-3 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-pink-300" />
+                <div id="nameError" class="error-message text-sm text-red-500 mb-2"></div>
+                <input type="text" id="username" placeholder="Username" required minlength="3" maxlength="30" pattern="[a-zA-Z0-9_]+" class="w-full mb-3 px-3 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-pink-300" />
+                <div id="usernameError" class="error-message text-sm text-red-500 mb-2"></div>
+                <input type="email" id="email" placeholder="Email" required class="w-full mb-3 px-3 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-pink-300" />
+                <div id="emailError" class="error-message text-sm text-red-500 mb-2"></div>
+                <input type="password" id="password" placeholder="Password" required class="w-full mb-3 px-3 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-pink-300" />
+                <div id="passwordHelp" class="text-xs text-gray-500 mb-1">At least 8 characters, including uppercase, lowercase, number, and symbol.</div>
+                <div id="passwordError" class="error-message text-sm text-red-500 mb-2"></div>
+                <button type="submit" class="w-full bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 rounded-lg transition">Register</button>
+            </form>
+            <div id="registerMessage" class="mt-3 text-center"></div>
+            <div class="text-center mt-4">
+                <span class="text-sm text-slate-700">Already have an account?</span>
+                <a href="/login" class="text-blue-600 underline ml-1">Log in</a>
             </div>
-            <!-- Username -->
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" required minlength="3" maxlength="30" pattern="[a-zA-Z0-9_]+">
-                <div id="usernameError" class="error-message"></div>
+            <div class="text-center mt-1">
+                <a href="/" class="text-pink-400 underline text-xs">← Back to Home</a>
             </div>
-            <!-- Email -->
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" required>
-                <div id="emailError" class="error-message"></div>
-            </div>
-            <!-- Password -->
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" required>
-                <div id="passwordHelp" class="form-text">
-                  At least 8 characters, including uppercase, lowercase, number, and symbol.
-                </div>
-                <div id="passwordError" class="error-message"></div>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Register</button>
-        </form>
-        <div id="registerMessage" class="mt-3 text-center"></div>
+        </div>
     </div>
 
 <script>
