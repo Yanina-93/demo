@@ -23,7 +23,7 @@ public class IncomeViewController {
     @Autowired
     private UserRepository userRepo;
 
-    // Mostrar formulario y lista de ingresos
+    // show all incomes for the authenticated user
     @GetMapping
     public String showIncomes(Model model, @AuthenticationPrincipal User userDetails) {
         String email = userDetails.getUsername();
@@ -36,7 +36,7 @@ public class IncomeViewController {
         return "incomes"; // templates/incomes.html
     }
 
-    // Procesar el formulario de ingreso
+    // Process the income form
     @PostMapping("/add")
     public String addIncome(@Valid @ModelAttribute("income") Income income,
                             BindingResult result,
@@ -51,7 +51,7 @@ public class IncomeViewController {
             model.addAttribute("incomes", incomeRepo.findByAppUser(appUser));
             return "incomes";
         }
-        // Asocia el income al usuario autenticado
+        // Associate the income with the authenticated user
         income.setAppUser(appUser);
         incomeRepo.save(income);
         return "redirect:/incomes";

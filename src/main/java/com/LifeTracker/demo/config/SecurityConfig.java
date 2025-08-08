@@ -37,7 +37,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // Importante: permite sesiones para login web
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // Important. Allows session creation if needed, but does not require it.
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**", "/api/motivation/**", "/api/currency/**", "/v3/api-docs/**", "/swagger-ui/**","/api/random-quote").permitAll()
                 .requestMatchers("/", "/home", "/index", "/login", "/register", "/calendar/**", "/api/quotes/**","/images/**").permitAll()

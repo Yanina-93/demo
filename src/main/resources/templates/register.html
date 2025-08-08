@@ -45,7 +45,7 @@ function passwordStrong(password) {
 document.getElementById("registerForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    // Limpia errores previos
+    // clean up previous errors
     document.getElementById("nameError").innerText = "";
     document.getElementById("usernameError").innerText = "";
     document.getElementById("emailError").innerText = "";
@@ -58,22 +58,22 @@ document.getElementById("registerForm").addEventListener("submit", function(e) {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
 
-    // Validación nombre
+    // Validation name
     if (name.length < 2) {
         document.getElementById("nameError").innerText = "Name is too short.";
         valid = false;
     }
-    // Validación username
+    // Validation username
     if (username.length < 3 || !/^[a-zA-Z0-9_]+$/.test(username)) {
         document.getElementById("usernameError").innerText = "Minimum 3 characters (letters, numbers, and _ only).";
         valid = false;
     }
-    // Validación email
+    // Validation email
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
         document.getElementById("emailError").innerText = "Invalid email.";
         valid = false;
     }
-    // Validación contraseña fuerte
+    // Validation strong password
     if (!passwordStrong(password)) {
         document.getElementById("passwordError").innerText = "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a symbol.";
         valid = false;

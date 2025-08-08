@@ -25,15 +25,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // SOLO aplica el filtro para rutas /api/
+        // Check if the request is for an API endpoint
         String path = request.getRequestURI();
         if (!path.startsWith("/api/")) {
-            // Para rutas que NO son /api/, no hacer nada especial
+            // For requests that are NOT /api/, do nothing special
             filterChain.doFilter(request, response);
             return;
         }
 
-        System.out.println("Entra al filtro JWT para: " + path);
+        System.out.println("Entering JWT filter for: " + path);
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -43,21 +43,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.extractUsername(token);
                 System.out.println("Token recibido: " + token);
-                System.out.println("Username extraído: " + username);
+                System.out.println("Username extracted: " + username);
             } catch (Exception e) {
-                System.out.println("Error al extraer username: " + e.getMessage());
+                System.out.println("Error extracting username: " + e.getMessage());
             }
 
             if (username != null && jwtUtil.isTokenValid(token)) {
-                System.out.println("Token válido, seteando autenticación para: " + username);
+                System.out.println("Valid token, setting authentication for: " + username);
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } else {
-                System.out.println("Token inválido o username null");
+                System.out.println("Invalid token or null username");
             }
         } else {
-            System.out.println("No se encontró header Authorization o no es Bearer");
+            System.out.println("No Authorization header found or not Bearer");
         }
 
         filterChain.doFilter(request, response);

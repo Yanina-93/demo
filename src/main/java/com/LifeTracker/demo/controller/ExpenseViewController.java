@@ -23,10 +23,10 @@ public class ExpenseViewController {
     @Autowired
     private UserRepository userRepo;
 
-    // Mostrar formulario y lista de gastos
+    // Show all expenses for the authenticated user
     @GetMapping
     public String showExpenses(Model model, @AuthenticationPrincipal User userDetails) {
-        // Busca el usuario autenticado por email
+        // Find the authenticated user by email
         String email = userDetails.getUsername();
         AppUser appUser = userRepo.findByEmail(email).orElse(null);
 
@@ -39,7 +39,7 @@ public class ExpenseViewController {
         return "expenses"; // templates/expenses.html
     }
 
-    // Procesar el formulario de gasto
+    // Process the expense form
     @PostMapping("/add")
     public String addExpense(@Valid @ModelAttribute("expense") Expense expense,
                              BindingResult result,
@@ -57,7 +57,7 @@ public class ExpenseViewController {
             return "expenses";
         }
 
-        // Asocia el gasto al usuario autenticado
+        // Associate the expense with the authenticated user
         expense.setAppUser(appUser);
         expenseRepo.save(expense);
         return "redirect:/expenses";

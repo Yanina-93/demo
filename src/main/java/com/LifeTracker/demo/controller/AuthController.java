@@ -26,7 +26,7 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // REGISTRO
+    // REGISTER
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         if (userService.findByEmail(request.getEmail()).isPresent()) {
@@ -41,11 +41,11 @@ public class AuthController {
             request.getName()
         );
         if (registerResult.isPresent()) {
-            // Si llega aquí, significa que por alguna razón el usuario existía (rara vez pasa)
+            // If the user already exists, we return a bad request
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new MessageResponse("Email already registered."));
         }
-        // Registro exitoso
+        // Successful registration
         return ResponseEntity.ok(
             new MessageResponse("User registered successfully: " + request.getEmail())
         );
@@ -65,7 +65,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new MessageResponse("Invalid credentials (incorrect password)."));
         }
-        String token = jwtUtil.generateToken(user.getEmail()); // Mejor si pasas también el rol
+        String token = jwtUtil.generateToken(user.getEmail()); 
         return ResponseEntity.ok(new AuthResponse(token, user.getEmail(), user.getName(), user.getRole()));
     }
 }

@@ -23,7 +23,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Devuelve Optional.empty() si el registro fue exitoso, o el Optional con el usuario si ya existe
+    
     public Optional<AppUser> register(String email, String password, String role, String name) {
         Optional<AppUser> existing = userRepository.findByEmail(email);
         if (existing.isPresent()) {

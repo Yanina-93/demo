@@ -27,8 +27,8 @@ public class CalendarApiController {
         // Mapea los eventos a DTO
         return events.stream().map(ev -> new CalendarEventDTO(
                 ev.getTitle(),
-                ev.getStart().toString(),  // Asegúrate que es formato ISO8601
-                ev.getFinish().toString()  // El campo debe llamarse 'end' en el DTO
+                ev.getStart().toString(),  
+                ev.getFinish().toString()  
         )).collect(Collectors.toList());
     }
 }

@@ -13,7 +13,7 @@ public class CurrencyController {
 
     @GetMapping("/eur-clp")
     public Double getEurToClpRate() {
-        // Llama al método que obtiene el valor actualizado
+        
         return currencyService.getEurToClpRate();
     }
 }

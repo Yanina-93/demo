@@ -13,10 +13,10 @@ public class CalendarEvent {
     private String description;
     private LocalDateTime start;
     private LocalDateTime finish;
-    private String username; // para filtrar por usuario
+    private String username; // filter by username
 
     @ManyToOne
-    @JoinColumn(name = "user_id") // el nombre puede ser distinto si quieres
+    @JoinColumn(name = "user_id") 
     private AppUser appUser;
 
     // getters y setters

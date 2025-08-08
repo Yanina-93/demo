@@ -10,7 +10,7 @@
     <div class="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
         <h2 class="text-2xl font-bold text-blue-700 mb-6 text-center">Incomes</h2>
 
-        <!-- Formulario para agregar ingreso -->
+        <!-- Form to add income -->
         <form th:action="@{/incomes/add}" th:object="${income}" method="post" class="flex flex-col gap-4 mb-8">
             <div class="flex flex-col">
                 <label class="text-sm font-medium mb-1 text-blue-800">Amount (€)</label>
@@ -46,6 +46,6 @@
                class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-semibold px-4 py-2 rounded-lg transition">Back to Dashboard</a>
         </div>
     </div>
-    <div th:replace="~{fragments/footer :: footer}"></div>
+   
 </body>
 </html>

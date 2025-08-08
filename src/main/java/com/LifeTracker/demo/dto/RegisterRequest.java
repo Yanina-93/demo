@@ -15,10 +15,10 @@ public class RegisterRequest {
     private String password;
 
     @NotBlank(message = "Name is required")
-    private String name; // si pides nombre en el registro
+    private String name; 
     private String role;
 
-    // Constructor vacío necesario para deserialización
+    // Constructor emoty for deserialization
     public RegisterRequest() {}
 
     // Getters y setters

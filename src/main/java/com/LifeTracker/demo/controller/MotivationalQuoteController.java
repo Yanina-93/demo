@@ -28,7 +28,8 @@ public class MotivationalQuoteController {
 
     // --- POPUP INTEGRATION ---
 
-    // 1. Obtener una quote random (fuente interna o desde la tabla)
+    // 1. got random quote for the popup
+    // (when the user clicks on the "Get Quote" button)
     @GetMapping("/random")
     public Map<String, String> getRandomQuote() {
         List<MotivationalQuote> allQuotes = quoteRepo.findAll();
@@ -37,23 +38,24 @@ public class MotivationalQuoteController {
             Random random = new Random();
             quoteText = allQuotes.get(random.nextInt(allQuotes.size())).getText();
         } else {
-            // Fallback si no hay ninguna en la BD
+            // Fallback quote if the list is empty
             quoteText = "¡Hoy es un buen día para empezar algo nuevo!";
         }
         return Map.of("text", quoteText);
     }
 
-    // 2. Guardar la quote para el usuario autenticado (cuando clickea "Guardar")
+    // 2. Save a new quote
+    // (when the user submits a new quote from the popup)
      @PostMapping
     public MotivationalQuote createQuote(
             @Valid @RequestBody MotivationalQuote quote,
             @AuthenticationPrincipal User userDetails) {
 
-        // Obtenemos el email desde el usuario autenticado
+        // Obtain the email from the authenticated user
         String email = userDetails.getUsername();
         AppUser appUser = userRepo.findByEmail(email).orElse(null);
 
-        // Asociamos el usuario a la quote (si existe)
+        // Associate the user with the quote (if it exists)
         if (appUser != null) {
             quote.setAppUser(appUser);
         }
@@ -62,7 +64,7 @@ public class MotivationalQuoteController {
     }
        
 
-    // --- TUS CRUD EXISTENTES ---
+    // --- Crud alredy on  ---
 
     @GetMapping
     public List<MotivationalQuote> getAllQuotes() {

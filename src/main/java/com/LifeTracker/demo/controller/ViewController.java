@@ -47,14 +47,14 @@ public class ViewController {
         return "calendar";
     }
 
-    // LOGIN (GET - formulario)
+    // LOGIN (GET - form)
     @GetMapping("/login")
     public String loginForm(Model model) {
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
     }
 
-    // LOGIN (POST - proceso)
+    // LOGIN (POST - process)
     @PostMapping("/login")
     public String handleLogin(@ModelAttribute("loginRequest") @Valid LoginRequest request, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
@@ -65,10 +65,10 @@ public class ViewController {
             model.addAttribute("error", "Invalid credentials.");
             return "login";
         }
-        // Opcional: agregar info del usuario a la sesión o modelo
+        // Optional:
         model.addAttribute("user", userOpt.get());
         model.addAttribute("username", userOpt.get().getEmail());
-        // Redirige a dashboard tras login exitoso
+        // Redirect to dashboard after successful login
         return "redirect:/dashboard-alt";
     }
 
@@ -79,7 +79,7 @@ public class ViewController {
         return "register";
     }
 
-    // REGISTER (POST - proceso)
+    // REGISTER (POST - process)
     @PostMapping("/register")
     public String handleRegister(@ModelAttribute("registerRequest") @Valid RegisterRequest request, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {

@@ -21,14 +21,14 @@ public class Event {
     @NotEmpty(message = "This field cannot be empty")
     @Size(min = 2, max = 50)
     @Schema(description = "Type of the event", example = "work")
-    private String type; // clase, trabajo, estudio, descanso
+    private String type; // class, meeting, etc.
 
     @Schema(description = "Date of the event", example = "2023-03-15")
     private java.sql.Date date;
 
     @Schema(description = "Start time of the event", example = "10:00:00")
     private java.sql.Time startTime;
-    private Integer duration; // minutos
+    private Integer duration; // minutes
 
     @ManyToOne
     @JoinColumn(name = "appUser_id")

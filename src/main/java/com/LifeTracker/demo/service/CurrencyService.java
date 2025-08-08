@@ -17,7 +17,7 @@ public class CurrencyService {
         org.json.JSONObject obj = new org.json.JSONObject(response);
 
         if (obj.getString("result").equals("success")) {
-            // El resultado está en rates["CLP"]
+            // ["CLP"]
             org.json.JSONObject rates = obj.getJSONObject("rates");
             return rates.getDouble("CLP");
         } else {

@@ -17,7 +17,7 @@ public class CalendarEventService {
     private UserRepository userRepository;
 
     public List<CalendarEvent> getEventsForUser(String username) {
-        // Encuentra el usuario por email (o username, según tu lógica)
+        // Get the user by email
         AppUser appUser = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User not found: " + username));
         return repo.findByAppUser(appUser);
     }

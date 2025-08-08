@@ -49,7 +49,7 @@ public class DashboardController {
         AppUser appUser = userRepo.findByEmail(email).orElse(null);
 
         if (appUser == null) {
-            // Si el usuario no existe en la base de datos
+            // If the user is not found, redirect to login
             return "redirect:/login";
         }
 
@@ -67,7 +67,7 @@ public class DashboardController {
         System.out.println("Incomes size: " + incomes.size());
         System.out.println("Expenses size: " + expenses.size());
 
-        // Next 3 upcoming events
+        // Next 10 upcoming events
         List<CalendarEvent> upcomingEvents = events.stream()
                 .sorted((e1, e2) -> e1.getStart().compareTo(e2.getStart()))
                 .limit(10)
@@ -116,7 +116,8 @@ public class DashboardController {
 
         Workbook workbook = new XSSFWorkbook();
 
-        // Hoja de Gastos
+        // excel sheets
+        // Expenses sheet
         Sheet expenseSheet = workbook.createSheet("Expenses");
         Row header1 = expenseSheet.createRow(0);
         header1.createCell(0).setCellValue("Date");
@@ -132,7 +133,7 @@ public class DashboardController {
             row.createCell(3).setCellValue(expense.getAmount().doubleValue());
         }
 
-        // Hoja de Ingresos
+        // Incomes sheet
         Sheet incomeSheet = workbook.createSheet("Incomes");
         Row header2 = incomeSheet.createRow(0);
         header2.createCell(0).setCellValue("Date");
@@ -146,7 +147,7 @@ public class DashboardController {
             row.createCell(2).setCellValue(income.getAmount().doubleValue());
         }
 
-        // Configura la respuesta HTTP para descargar el archivo
+        // Set response headers
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=wallet-summary.xlsx");
         workbook.write(response.getOutputStream());
